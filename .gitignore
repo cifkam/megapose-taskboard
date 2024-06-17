@@ -1,3 +1,8 @@
+/cctextures/
+/bop_datasets/
+/custom_dataset/train_pbr/
+/custom_dataset/camera.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
