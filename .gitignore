@@ -1,7 +1,15 @@
 /cctextures/
-/bop_datasets/
-/custom_dataset/train_pbr/
-/custom_dataset/camera.json
+/local_data/custom_dataset/train_pbr/
+/local_data/custom_dataset/camera.json
+/local_data/blender_pbr_dataset/
+/local_data/bop_datasets/
+/local_data/debug_data/
+/local_data/experiments/
+/local_data/joblib_cache/
+/local_data/notebook_data
+/local_data/results/
+/local_data/blender_pbr_dataset/
+/local_data/cctextures/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -21,6 +21,9 @@ from blenderproc.python.utility.MathUtility import change_source_coordinate_fram
 from blenderproc.python.loader.ObjectLoader import load_obj
 from blenderproc.python.loader.BopLoader import _BopLoader
 
+#from happypose.pose_estimators.megapose.config import LOCAL_DATA_DIR
+LOCAL_DATA_DIR = Path(__file__).parent.parent / 'local_data'
+
 def load_custom_objs(bop_dataset_path: str, model_type: str = "", obj_ids: Optional[List[int]] = None,
                   sample_objects: bool = False, num_of_objs_to_sample: Optional[int] = None,
                   obj_instances_limit: int = -1, mm2m: Optional[bool] = None, object_model_unit: str = 'm',
@@ -111,35 +114,33 @@ def load_custom_objs(bop_dataset_path: str, model_type: str = "", obj_ids: Optio
     return loaded_objects
 
 
-
+###################################################################
 
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--bop_dir', default="bop_datasets", help="Path to the bop datasets parent directory")
-parser.add_argument('--cctextures_dir', default="cctextures", help="Path to downloaded cc textures")
-parser.add_argument('--out_dir', default=".", help="Path to where the final files will be saved ")
 parser.add_argument('--num_scenes', type=int, default=400, help="How many scenes with 25 images each to generate")
 args = parser.parse_args()
+
+args.custom_ds_name = "custom_dataset"
+args.bop_dir = LOCAL_DATA_DIR / 'bop_datasets'
+args.custom_data_dir = LOCAL_DATA_DIR / args.custom_ds_name
+args.cctextures_dir = LOCAL_DATA_DIR / 'cctextures'
 
 bproc.init()
 
 # load bop objects into the scene
-#target_bop_objs = bproc.loader.load_bop_objs(bop_dataset_path = os.path.join(args.bop_dir, 'ycbv'), mm2m = True)
-#target_bop_objs = load_custom_objs(bop_dataset_path = os.path.join(args.bop_dir, 'ycbv'), mm2m = True)
-target_objs = load_custom_objs(str(Path(__file__).parent / 'custom_dataset'), mm2m = True)
+target_objs = load_custom_objs(str(args.custom_data_dir), mm2m = True)
 N_target_objs = len(target_objs)
 
 # load distractor bop objects
-tless_dist_bop_objs = bproc.loader.load_bop_objs(bop_dataset_path = os.path.join(args.bop_dir, 'tless'), model_type = 'cad', mm2m = True)
-ycbv_dist_bop_objs = bproc.loader.load_bop_objs(bop_dataset_path = os.path.join(args.bop_dir, 'ycbv'), mm2m = True)
-#hb_dist_bop_objs = bproc.loader.load_bop_objs(bop_dataset_path = os.path.join(args.bop_dir, 'hb'), mm2m = True)
+tless_dist_bop_objs = bproc.loader.load_bop_objs(bop_dataset_path = str(args.bop_dir / 'tless'), model_type = 'cad', mm2m = True)
+ycbv_dist_bop_objs = bproc.loader.load_bop_objs(bop_dataset_path = str(args.bop_dir / 'ycbv'), mm2m = True)
 
 # load BOP datset intrinsics - use YCBV intrinsics
-bproc.loader.load_bop_intrinsics(bop_dataset_path = os.path.join(args.bop_dir, 'ycbv'))
+bproc.loader.load_bop_intrinsics(bop_dataset_path = str(args.bop_dir / 'ycbv'))
 
 # set shading and hide objects
-#for obj in (target_bop_objs + tless_dist_bop_objs + ycbv_dist_bop_objs + hb_dist_bop_objs):
 for obj in (target_objs + tless_dist_bop_objs + ycbv_dist_bop_objs):
     obj.set_shading_mode('auto')
     obj.hide(True)
@@ -179,15 +180,9 @@ bproc.renderer.set_max_amount_of_samples(50)
 for i in range(args.num_scenes):
 
     # Sample bop objects for a scene
-    
-    #sampled_target_bop_objs = list(np.random.choice(target_objs, size=20, replace=False))
     sampled_target_bop_objs = target_objs
-
-    #sampled_distractor_bop_objs = list(np.random.choice(tless_dist_bop_objs, size=2, replace=False))
-    #sampled_distractor_bop_objs += list(np.random.choice(ycbv_dist_bop_objs, size=2, replace=False))
-    #sampled_distractor_bop_objs += list(np.random.choice(hb_dist_bop_objs, size=2, replace=False))
-    sampled_distractor_bop_objs = list(np.random.choice(tless_dist_bop_objs, size=4, replace=False))
-    sampled_distractor_bop_objs += list(np.random.choice(ycbv_dist_bop_objs, size=4, replace=False))
+    sampled_distractor_bop_objs = list(np.random.choice(tless_dist_bop_objs, size=6, replace=False))
+    sampled_distractor_bop_objs += list(np.random.choice(ycbv_dist_bop_objs, size=6, replace=False))
     
 
     # Randomize materials and set physics
@@ -258,9 +253,9 @@ for i in range(args.num_scenes):
     data = bproc.renderer.render()
 
     # Write data in bop format
-    bproc.writer.write_bop(os.path.join(args.output_dir),
+    bproc.writer.write_bop(str(LOCAL_DATA_DIR),
                            target_objects = sampled_target_bop_objs,
-                           dataset = 'custom_dataset',
+                           dataset = args.custom_ds_name,
                            depth_scale = 0.1,
                            depths = data["depth"],
                            colors = data["colors"], 
