@@ -1,4 +1,4 @@
-# HappyPose - Taskboard
+# MegaPose - Taskboard
 This repository shows how to train simple MaskRCNN detector for the taskboard (or any custom object) using only synthetic data, and then run the MegaPose inference. For more information about the MegaPose, see the [HappyPose](https://github.com/agimus-project/happypose/tree/dev) repository.
 ## 1. Installation
 
