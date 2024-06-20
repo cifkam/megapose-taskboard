@@ -14,8 +14,8 @@ from happypose.pose_estimators.megapose.config import EXP_DIR
 from happypose.toolbox.utils.distributed import reduce_dict
 from happypose.toolbox.inference.utils import filter_detections, add_instance_id
 
-def load_detector(exp_id: str):
-    model = MaskRCNN.load_from_checkpoint(str(EXP_DIR / exp_id / "model.ckpt"))
+def load_detector(exp_id, device):
+    model = MaskRCNN.load_from_checkpoint(str(EXP_DIR / exp_id / "model.ckpt")).to(device)
     model.eval()
     return model
 

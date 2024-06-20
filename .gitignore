@@ -11,6 +11,8 @@
 /local_data/blender_pbr_dataset/
 /local_data/cctextures/
 /local_data/megapose-models/
+/local_data/examples/**/outputs/
+/local_data/examples/**/visualizations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
