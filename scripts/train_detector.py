@@ -77,7 +77,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--exp-id", type=str, default=None)
+    parser.add_argument("--exp-id", type=str, default="detector-custom")
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--num-epochs", type=int, default=10)
 
